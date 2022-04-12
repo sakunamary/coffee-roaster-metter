@@ -40,6 +40,9 @@ delay(2000); // Pause for 2 seconds
 void loop() {
   // put your main code here, to run repeatedly:
 
+  as7341_read();
+
+
 u8g2.firstPage();
   do {
     u8g2.setFont(u8g2_font_ncenB10_tr);
@@ -47,17 +50,6 @@ u8g2.firstPage();
   } while ( u8g2.nextPage() );
 
 }
-
-
-/*
-
-  Serial.println("100 mA LED blink");
-  as7341.setLEDCurrent(100); // 100mA
-  as7341.enableLED(true);
-  delay(100);
-  as7341.enableLED(false);
-
-*/
 
 
 void  as7341_read(){
