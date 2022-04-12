@@ -13,6 +13,9 @@ uint16_t readings[12]; //AS7341 data array
 
 
 
+
+
+
 void setup() {
 
 u8g2.begin();
@@ -30,7 +33,7 @@ delay(2000); // Pause for 2 seconds
   as7341.setATIME(100);
   as7341.setASTEP(999);
   as7341.setGain(AS7341_GAIN_256X);
-
+  as7341.startReading();
 }
 
 
@@ -40,6 +43,8 @@ void loop() {
     Serial.println("Error reading all channels!");
     return;
   }
+    as7341.getAllChannels(readings);  //Calling this any other time may give you old data
+
 u8g2.firstPage();
   do {
     u8g2.setFont(u8g2_font_ncenB10_tr);
