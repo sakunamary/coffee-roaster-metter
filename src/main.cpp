@@ -6,9 +6,9 @@
 
 
 Adafruit_AS7341 as7341; // I2C address 0x39
-U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R3, /* reset=*/ U8X8_PIN_NONE);
+//U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 //U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE, /* clock=*/ 5, /* data=*/ 4); 
-//U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
 
 uint16_t readings[12]; //AS7341 data array
@@ -43,7 +43,7 @@ delay(2000);
 
 void loop() {
   // put your main code here, to run repeatedly:
-  as7341_read();
+  //as7341_read();
 /*
 u8g2.firstPage();
 u8g2.setFont(u8g2_font_6x10_tr);
@@ -53,8 +53,9 @@ u8g2.setFont(u8g2_font_6x10_tr);
  delay(1000);
 */
  u8g2.firstPage();
+ u8g2.setFont(u8g2_font_ncenB10_tr);
   do {
-    u8g2.setFont(u8g2_font_ncenB10_tr);
+
     u8g2.drawStr(0,24,"Hello World!");
   } while ( u8g2.nextPage() );
 }
