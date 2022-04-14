@@ -5,9 +5,14 @@
 
 #include <oled.h>
 
+#include "avr8-stub.h"
+#include "app_api.h"   // only needed with flash breakpoints
+
 
 Adafruit_AS7341 as7341; // I2C address 0x39
+
 OLED display(A4,A5,NO_RESET_PIN,OLED::W_128,OLED::H_64,OLED::CTRL_SH1106,0x3c); 
+
 //OLED::OLED(uint8_t sda_pin, uint8_t scl_pin, uint8_t reset_pin, 
 //tWidth width, tHeight height, tDisplayCtrl displayCtrl,
 // uint8_t i2c_address)
@@ -22,27 +27,43 @@ void show_open();
 
 
 void setup() {
- delay(1000);
-    display.begin();   
-    display.useOffset(false);
+ //delay(1000);
 
-    // Draw pixels in the outer edges  
-    display.draw_line(0,10,128,10);
+
+     debug_init();
+    display.begin();   
+    display.useOffset(true);//for sh1106 
+
+    display.clear();
+    display.setCursor(0,0);
+    display.print("AS7341 Initing...");
     display.display();
+
+
+    as7341.begin();
 
   as7341.setATIME(100);
   as7341.setASTEP(999);
   as7341.setGain(AS7341_GAIN_256X);
   as7341.startReading();
+
+
+    display.clear();
+    display.setCursor(0,0);
+    display.print("AS7341 OK");
+    display.setCursor(0,20);
+    display.print("Ready for measure");
+    display.display();
+     
+
 }
 
 
 void loop() {
   // put your main code here, to run repeatedly:
-     as7341_read();
+    as7341_read();
     delay(500);
     display.clear();
-    display.draw_circle(36,16,14,OLED::SOLID);
     display.setCursor(2,40);
     display.print(String(counts[2]));
     display.display();
