@@ -38,10 +38,12 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  //as7341_read();
+     as7341_read();
     delay(500);
     display.clear();
     display.draw_circle(36,16,14,OLED::SOLID);
+    display.setCursor(2,40);
+    display.print(String(counts[2]));
     display.display();
 }
 
@@ -50,7 +52,7 @@ void  as7341_read(){
 
   //as7341.setLEDCurrent(100); // 100mA
   //as7341.enableLED(true);
-  delay(1000);
+ // delay(1000);
 if (!as7341.readAllChannels()){
    for(uint8_t i = 0; i < 12; i++) {
     if(i == 4 || i == 5) continue;
