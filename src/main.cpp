@@ -24,6 +24,7 @@ void show_open();
 void setup() {
  delay(1000);
     display.begin();   
+    display.useOffset(false);
 
     // Draw pixels in the outer edges  
     display.draw_line(0,10,128,10);
