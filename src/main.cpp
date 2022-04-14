@@ -2,15 +2,15 @@
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_AS7341.h>
-#include <U8g2lib.h>
+
+#include <oled.h>
 
 
 Adafruit_AS7341 as7341; // I2C address 0x39
-//U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
-//U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE, /* clock=*/ 5, /* data=*/ 4); 
-U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
-
-
+OLED display(A4,A5,NO_RESET_PIN,OLED::W_128,OLED::H_64,OLED::CTRL_SH1106,0x3c); 
+//OLED::OLED(uint8_t sda_pin, uint8_t scl_pin, uint8_t reset_pin, 
+//tWidth width, tHeight height, tDisplayCtrl displayCtrl,
+// uint8_t i2c_address)
 uint16_t readings[12]; //AS7341 data array
 float counts[12];
 
@@ -22,17 +22,12 @@ void show_open();
 
 
 void setup() {
+ delay(1000);
+    display.begin();   
 
-u8g2.begin(); 
-u8g2.setFont(u8g2_font_6x10_tr);
-u8g2.firstPage();
-    do{
-        delay(500); 
-        u8g2.drawStr(0,24,"AS7341 Initing...");
-        }while( u8g2.nextPage());
-
-delay(2000);
-
+    // Draw pixels in the outer edges  
+    display.draw_line(0,10,128,10);
+    display.display();
 
   as7341.setATIME(100);
   as7341.setASTEP(999);
@@ -44,20 +39,10 @@ delay(2000);
 void loop() {
   // put your main code here, to run repeatedly:
   //as7341_read();
-/*
-u8g2.firstPage();
-u8g2.setFont(u8g2_font_6x10_tr);
-  do {
-  show_data();
-  } while ( u8g2.nextPage() );
- delay(1000);
-*/
- u8g2.firstPage();
- u8g2.setFont(u8g2_font_ncenB10_tr);
-  do {
-
-    u8g2.drawStr(0,24,"Hello World!");
-  } while ( u8g2.nextPage() );
+    delay(500);
+    display.clear();
+    display.draw_circle(36,16,14,OLED::SOLID);
+    display.display();
 }
 
 
@@ -81,7 +66,5 @@ if (!as7341.readAllChannels()){
 
 
 void show_data(){
-    u8g2.setCursor(0,32);
-    u8g2.print("String test");
-    //u8g2.print(String(counts[1],2));
+
 }
