@@ -1,24 +1,34 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include <Wire.h>
-#include <Adafruit_AS7341.h>
-
-#include <oled.h>
-
-#include "avr8-stub.h"
-#include "app_api.h"   // only needed with flash breakpoints
 
 
-Adafruit_AS7341 as7341; // I2C address 0x39
+//#include <oled.h>
+#include "DFRobot_AS7341.h" // I2C address 0x39
 
-OLED display(A4,A5,NO_RESET_PIN,OLED::W_128,OLED::H_64,OLED::CTRL_SH1106,0x3c); 
+#include <U8g2lib.h>
+
+
+//#include "avr8-stub.h"
+//#include "app_api.h"   // only needed with flash breakpoints
+
+
+
+
+DFRobot_AS7341 as7341;
+
+//OLED display(A4,A5,NO_RESET_PIN,OLED::W_128,OLED::H_64,OLED::CTRL_SH1106,0x3C); 
+U8G2_SH1106_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+
+
 
 //OLED::OLED(uint8_t sda_pin, uint8_t scl_pin, uint8_t reset_pin, 
 //tWidth width, tHeight height, tDisplayCtrl displayCtrl,
 // uint8_t i2c_address)
 uint16_t readings[12]; //AS7341 data array
 float counts[12];
-
+  DFRobot_AS7341::sModeOneData_t data1;
+  DFRobot_AS7341::sModeTwoData_t data2;
 
 void as7341_read(); 
 void show_data();
@@ -27,68 +37,102 @@ void show_open();
 
 
 void setup() {
- //delay(1000);
+
+//Serial.begin(115200);
+
+  u8g2.begin();
 
 
-     debug_init();
-    display.begin();   
-    display.useOffset(true);//for sh1106 
+  while (as7341.begin() != 0) {
 
-    display.clear();
-    display.setCursor(0,0);
-    display.print("AS7341 Initing...");
-    display.display();
+        u8g2.setFont(u8g2_font_6x12_tr);  // use chinese2 for all the glyphs of "你好世界"
+        //u8g2.setFont(u8g2_font_b10_t_japanese1);  // all the glyphs of "こんにちは世界" are already included in japanese1: Lerning Level 1-6
+        u8g2.setFontDirection(0);
+        u8g2.firstPage();
+        do {
+            u8g2.setCursor(0, 12);
+            u8g2.print("AS7431 Initing ...");
+        } while ( u8g2.nextPage() );
 
+    delay(1000);
+  }
+    
+        u8g2.setFont(u8g2_font_6x12_tr);  // use chinese2 for all the glyphs of "你好世界"
+        //u8g2.setFont(u8g2_font_b10_t_japanese1);  // all the glyphs of "こんにちは世界" are already included in japanese1: Lerning Level 1-6
+        u8g2.setFontDirection(0);
+        u8g2.firstPage();
+        do {
+            u8g2.setCursor(0, 12);
+            u8g2.print("Ready for measureing ");
+        } while ( u8g2.nextPage() );
 
-    as7341.begin();
-
-  as7341.setATIME(100);
-  as7341.setASTEP(999);
-  as7341.setGain(AS7341_GAIN_256X);
-  as7341.startReading();
-
-
-    display.clear();
-    display.setCursor(0,0);
-    display.print("AS7341 OK");
-    display.setCursor(0,20);
-    display.print("Ready for measure");
-    display.display();
-     
-
+    delay(2000);
+  
 }
 
 
 void loop() {
-  // put your main code here, to run repeatedly:
-    as7341_read();
-    delay(500);
-    display.clear();
-    display.setCursor(2,40);
-    display.print(String(counts[2]));
-    display.display();
+
+    as7341_read(); 
+    show_data();
+
 }
 
 
 void  as7341_read(){
 
-  //as7341.setLEDCurrent(100); // 100mA
-  //as7341.enableLED(true);
- // delay(1000);
-if (!as7341.readAllChannels()){
-   for(uint8_t i = 0; i < 12; i++) {
-    if(i == 4 || i == 5) continue;
-    // we skip the first set of duplicate clear/NIR readings
-    // (indices 4 and 5)
-    counts[i] = as7341.toBasicCounts(readings[i]);
-  }
-  }
+  //Start spectrum measurement 
+  //Channel mapping mode: 1.eF1F4ClearNIR,2.eF5F8ClearNIR
+  as7341.startMeasure(as7341.eF1F4ClearNIR);
+  //Read the value of sensor data channel 0~5, under eF1F4ClearNIR
+  data1 = as7341.readSpectralDataOne();
+  /*
+  Serial.print("F1(405-425nm):");
+  Serial.println(data1.ADF1);
+  Serial.print("F2(435-455nm):");
+  Serial.println(data1.ADF2);
+  Serial.print("F3(470-490nm):");
+  Serial.println(data1.ADF3);
+  Serial.print("F4(505-525nm):");   
+  Serial.println(data1.ADF4);
+  //Serial.print("Clear:");
+  //Serial.println(data1.ADCLEAR);
+  //Serial.print("NIR:");
+  //Serial.println(data1.ADNIR);
+  as7341.startMeasure(as7341.eF5F8ClearNIR);
+  */
+  //Read the value of sensor data channel 0~5, under eF5F8ClearNIR
+  data2 = as7341.readSpectralDataTwo();
+  /*
+  Serial.print("F5(545-565nm):");
+  Serial.println(data2.ADF5);
+  Serial.print("F6(580-600nm):");
+  Serial.println(data2.ADF6);
+  Serial.print("F7(620-640nm):");
+  Serial.println(data2.ADF7);
+  Serial.print("F8(670-690nm):");
+  Serial.println(data2.ADF8);
+  Serial.print("Clear:");
+  Serial.println(data2.ADCLEAR);
+  Serial.print("NIR:");
+  Serial.println(data2.ADNIR);
+  */
   delay(1000);
-  //as7341.enableLED(false);
   
 }
 
 
 void show_data(){
 
+  u8g2.setFont(u8g2_font_6x12_tr);  // use chinese2 for all the glyphs of "你好世界"
+  //u8g2.setFont(u8g2_font_b10_t_japanese1);  // all the glyphs of "こんにちは世界" are already included in japanese1: Lerning Level 1-6
+  u8g2.setFontDirection(0);
+  u8g2.firstPage();
+  do {
+    u8g2.setCursor(0, 15);
+    u8g2.print("F2(435-455nm):");
+    u8g2.setCursor(0, 30);
+    u8g2.print(data1.ADF2);
+  } while ( u8g2.nextPage() );
+  delay(1000);
 }
