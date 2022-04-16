@@ -1,2 +1,2 @@
 # coffee-roaster-metter
-asm7341 base 咖啡烘焙率测试仪器
+as7341 base 咖啡烘焙率测试仪器
