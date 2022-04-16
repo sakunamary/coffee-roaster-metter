@@ -12,7 +12,9 @@
 //#include "avr8-stub.h"
 //#include "app_api.h"   // only needed with flash breakpoints
 
+#include "OneButton.h"
 
+#include "Enerlib.h"
 
 
 DFRobot_AS7341 as7341;
@@ -45,8 +47,7 @@ void setup() {
 
   while (as7341.begin() != 0) {
 
-        u8g2.setFont(u8g2_font_6x12_tr);  // use chinese2 for all the glyphs of "你好世界"
-        //u8g2.setFont(u8g2_font_b10_t_japanese1);  // all the glyphs of "こんにちは世界" are already included in japanese1: Lerning Level 1-6
+        u8g2.setFont(u8g2_font_6x12_tr);  
         u8g2.setFontDirection(0);
         u8g2.firstPage();
         do {
@@ -57,8 +58,7 @@ void setup() {
     delay(1000);
   }
     
-        u8g2.setFont(u8g2_font_6x12_tr);  // use chinese2 for all the glyphs of "你好世界"
-        //u8g2.setFont(u8g2_font_b10_t_japanese1);  // all the glyphs of "こんにちは世界" are already included in japanese1: Lerning Level 1-6
+        u8g2.setFont(u8g2_font_6x12_tr);  
         u8g2.setFontDirection(0);
         u8g2.firstPage();
         do {
@@ -99,8 +99,8 @@ void  as7341_read(){
   //Serial.println(data1.ADCLEAR);
   //Serial.print("NIR:");
   //Serial.println(data1.ADNIR);
-  as7341.startMeasure(as7341.eF5F8ClearNIR);
   */
+  as7341.startMeasure(as7341.eF5F8ClearNIR);
   //Read the value of sensor data channel 0~5, under eF5F8ClearNIR
   data2 = as7341.readSpectralDataTwo();
   /*
@@ -124,15 +124,64 @@ void  as7341_read(){
 
 void show_data(){
 
-  u8g2.setFont(u8g2_font_6x12_tr);  // use chinese2 for all the glyphs of "你好世界"
-  //u8g2.setFont(u8g2_font_b10_t_japanese1);  // all the glyphs of "こんにちは世界" are already included in japanese1: Lerning Level 1-6
+  u8g2.setFont(u8g2_font_6x12_tr);  
   u8g2.setFontDirection(0);
   u8g2.firstPage();
   do {
-    u8g2.setCursor(0, 15);
-    u8g2.print("F2(435-455nm):");
-    u8g2.setCursor(0, 30);
+    u8g2.drawRFrame(0,0,128,64,0); 
+    u8g2.drawLine(64,0,64,64);
+
+    u8g2.setCursor(2, 12);
+    u8g2.print("F1:");
+    u8g2.setCursor(22, 12);
+    u8g2.print(data1.ADF1);
+
+    u8g2.setCursor(2, 24);
+    u8g2.print("F2:");
+    u8g2.setCursor(22, 24);
     u8g2.print(data1.ADF2);
+
+    u8g2.setCursor(2, 36);
+    u8g2.print("F3:");
+    u8g2.setCursor(22,36);
+    u8g2.print(data1.ADF3);
+
+    u8g2.setCursor(2, 48);
+    u8g2.print("F4:");
+    u8g2.setCursor(22,48);
+    u8g2.print(data1.ADF4);
+
+     
+    u8g2.setCursor(2, 60);
+    u8g2.print("CLR:");
+    u8g2.setCursor(26,60);
+    u8g2.print(data2.ADCLEAR);
+
+    u8g2.setCursor(66, 12);
+    u8g2.print("F5:");
+    u8g2.setCursor(86, 12);
+    u8g2.print(data2.ADF5);
+
+    u8g2.setCursor(66, 24);
+    u8g2.print("F6:");
+    u8g2.setCursor(86, 24);
+    u8g2.print(data2.ADF6);
+
+    u8g2.setCursor(66, 36);
+    u8g2.print("F7:");
+    u8g2.setCursor(86,36);
+    u8g2.print(data2.ADF7);
+
+    u8g2.setCursor(66, 48);
+    u8g2.print("F8:");
+    u8g2.setCursor(86,48);
+    u8g2.print(data2.ADF8);
+    
+    u8g2.setCursor(66, 60);
+    u8g2.print("NIR:");
+    u8g2.setCursor(90,60);
+    u8g2.print(data2.ADNIR);
+
   } while ( u8g2.nextPage() );
   delay(1000);
 }
