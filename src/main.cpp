@@ -9,24 +9,25 @@
 #include <U8g2lib.h>
 
 
-//#include "avr8-stub.h"
-//#include "app_api.h"   // only needed with flash breakpoints
+#include "avr8-stub.h"
+#include "app_api.h"   // only needed with flash breakpoints
 
 #include "OneButton.h"
 
-#include "Enerlib.h"
+
+//arduino sleep and wakeup lib;
+
+#include <Enerlib.h>
+Energy energy;
 
 
 DFRobot_AS7341 as7341;
 
-//OLED display(A4,A5,NO_RESET_PIN,OLED::W_128,OLED::H_64,OLED::CTRL_SH1106,0x3C); 
 U8G2_SH1106_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
+// Setup a new OneButton on pin A1.  
+OneButton button(A1,true);
 
-
-//OLED::OLED(uint8_t sda_pin, uint8_t scl_pin, uint8_t reset_pin, 
-//tWidth width, tHeight height, tDisplayCtrl displayCtrl,
-// uint8_t i2c_address)
 uint16_t readings[12]; //AS7341 data array
 float counts[12];
   DFRobot_AS7341::sModeOneData_t data1;
@@ -34,17 +35,12 @@ float counts[12];
 
 void as7341_read(); 
 void show_data();
-void show_open();
-
-
+void INT0_ISR(void);
+void doubleclick();
 
 void setup() {
-
-//Serial.begin(115200);
-
   u8g2.begin();
-
-
+  as7341.begin();
   while (as7341.begin() != 0) {
 
         u8g2.setFont(u8g2_font_6x12_tr);  
@@ -67,57 +63,36 @@ void setup() {
         } while ( u8g2.nextPage() );
 
     delay(2000);
-  
+  button.attachDoubleClick(doubleclick);
+
+
+
 }
 
 
 void loop() {
-
-    as7341_read(); 
+ button.tick();
     show_data();
-
+      delay(10);
 }
 
 
 void  as7341_read(){
-
+  pinMode(13, OUTPUT);   
+// light up 
+  as7341.controlLed(100);
+  as7341.enableLed(true);
+  delay(300);
   //Start spectrum measurement 
   //Channel mapping mode: 1.eF1F4ClearNIR,2.eF5F8ClearNIR
   as7341.startMeasure(as7341.eF1F4ClearNIR);
   //Read the value of sensor data channel 0~5, under eF1F4ClearNIR
   data1 = as7341.readSpectralDataOne();
-  /*
-  Serial.print("F1(405-425nm):");
-  Serial.println(data1.ADF1);
-  Serial.print("F2(435-455nm):");
-  Serial.println(data1.ADF2);
-  Serial.print("F3(470-490nm):");
-  Serial.println(data1.ADF3);
-  Serial.print("F4(505-525nm):");   
-  Serial.println(data1.ADF4);
-  //Serial.print("Clear:");
-  //Serial.println(data1.ADCLEAR);
-  //Serial.print("NIR:");
-  //Serial.println(data1.ADNIR);
-  */
   as7341.startMeasure(as7341.eF5F8ClearNIR);
   //Read the value of sensor data channel 0~5, under eF5F8ClearNIR
   data2 = as7341.readSpectralDataTwo();
-  /*
-  Serial.print("F5(545-565nm):");
-  Serial.println(data2.ADF5);
-  Serial.print("F6(580-600nm):");
-  Serial.println(data2.ADF6);
-  Serial.print("F7(620-640nm):");
-  Serial.println(data2.ADF7);
-  Serial.print("F8(670-690nm):");
-  Serial.println(data2.ADF8);
-  Serial.print("Clear:");
-  Serial.println(data2.ADCLEAR);
-  Serial.print("NIR:");
-  Serial.println(data2.ADNIR);
-  */
-  delay(1000);
+  delay(300);
+  as7341.enableLed(false);
   
 }
 
@@ -185,3 +160,42 @@ void show_data(){
   } while ( u8g2.nextPage() );
   delay(1000);
 }
+
+void INT0_ISR(void)
+{
+  /*
+  The WasSleeping function will return true if Arduino
+  was sleeping before the IRQ. Subsequent calls to
+  WasSleeping will return false until Arduino reenters
+  in a low power state. The WasSleeping function should
+  only be called in the ISR.
+  */
+  if (energy.WasSleeping())
+  {
+    /*
+    Arduino was waked up by IRQ.
+    
+    If you shut down external peripherals before sleeping, you
+    can reinitialize them here. Look on ATMega's datasheet for
+    hardware limitations in the ISR when microcontroller just
+    leave any low power state.
+    */
+  }
+  else
+  {
+    /*
+    The IRQ happened in awake state.
+    
+    This code is for the "normal" ISR.
+    */
+  }
+}
+
+
+
+void doubleclick() {
+  static int m = LOW;
+  // reverse the LED 
+  m = !m;
+  digitalWrite(13, m);
+} // doubleclick
