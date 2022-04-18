@@ -39,8 +39,15 @@ void INT0_ISR(void);
 void doubleclick();
 
 void setup() {
+debug_init();
+
   u8g2.begin();
   as7341.begin();
+
+    button.attachDoubleClick(doubleclick);
+    pinMode(13, OUTPUT); 
+
+
   while (as7341.begin() != 0) {
 
         u8g2.setFont(u8g2_font_6x12_tr);  
@@ -63,10 +70,6 @@ void setup() {
         } while ( u8g2.nextPage() );
 
     delay(2000);
-  button.attachDoubleClick(doubleclick);
-
-
-
 }
 
 
@@ -78,7 +81,6 @@ void loop() {
 
 
 void  as7341_read(){
-  pinMode(13, OUTPUT);   
 // light up 
   as7341.controlLed(100);
   as7341.enableLed(true);
