@@ -13,7 +13,7 @@
 #include "app_api.h"   // only needed with flash breakpoints
 #include "OneButton.h"
 //arduino sleep and wakeup lib;
-#include <Enerlib.h>
+#include "LowPower.h"
 
 
 
@@ -21,7 +21,7 @@
 U8G2_SH1106_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
 // Setup a new OneButton on pin A1.  
-  OneButton button(A1,true);
+  OneButton button(2,true);
 
 //setup AS7341 
   DFRobot_AS7341::sModeOneData_t data1;
@@ -38,22 +38,25 @@ float counts[12];
 void as7341_read(); //read out the data from as7431
 void show_data();
 void INT0_ISR(void);
-void doubleclick();
-
+void doubleclick(); //as7341reding data
+void singleclick(); //power on  
+void 
 
 
 void setup() {
+
 debug_init();
 
+
+  pinMode(13, OUTPUT); 
   u8g2.begin();
-  //as7341.begin();
+
 
   button.attachDoubleClick(doubleclick);
-  pinMode(13, OUTPUT); 
+
 
 
   while (as7341.begin() != 0) {
-
         u8g2.setFont(u8g2_font_6x12_tr);  
         u8g2.setFontDirection(0);
         u8g2.firstPage();
@@ -61,10 +64,8 @@ debug_init();
             u8g2.setCursor(0, 12);
             u8g2.print("AS7431 Initing ...");
         } while ( u8g2.nextPage() );
-
     delay(1000);
   }
-    
         u8g2.setFont(u8g2_font_6x12_tr);  
         u8g2.setFontDirection(0);
         u8g2.firstPage();
@@ -72,16 +73,13 @@ debug_init();
             u8g2.setCursor(0, 12);
             u8g2.print("Ready for measureing ");
         } while ( u8g2.nextPage() );
-
-    delay(2000);
 }
 
 
 void loop() {
- button.tick();
+  button.tick();
   delay(10);
   
-
 }
 
 
@@ -102,7 +100,6 @@ void  as7341_read(){
   as7341.enableLed(false);
   
 }
-
 
 void show_data(){
 
@@ -167,37 +164,6 @@ void show_data(){
   } while ( u8g2.nextPage() );
   delay(1000);
 }
-
-void INT0_ISR(void)
-{
-  /*
-  The WasSleeping function will return true if Arduino
-  was sleeping before the IRQ. Subsequent calls to
-  WasSleeping will return false until Arduino reenters
-  in a low power state. The WasSleeping function should
-  only be called in the ISR.
-  */
-  if (energy.WasSleeping())
-  {
-    /*
-    Arduino was waked up by IRQ.
-    
-    If you shut down external peripherals before sleeping, you
-    can reinitialize them here. Look on ATMega's datasheet for
-    hardware limitations in the ISR when microcontroller just
-    leave any low power state.
-    */
-  }
-  else
-  {
-    /*
-    The IRQ happened in awake state.
-    
-    This code is for the "normal" ISR.
-    */
-  }
-}
-
 
 
 void doubleclick() {
