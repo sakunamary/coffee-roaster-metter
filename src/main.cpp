@@ -38,6 +38,8 @@ float counts[12];
 void as7341_read(); //read out the data from as7431
 void show_data();
 void INT0_ISR(void);
+void doubleclick();
+
 
 
 void setup() {
@@ -77,8 +79,9 @@ debug_init();
 
 void loop() {
  button.tick();
- show_data();
- delay(10);
+  delay(10);
+  
+
 }
 
 
@@ -202,4 +205,7 @@ void doubleclick() {
   // reverse the LED 
   m = !m;
   digitalWrite(13, m);
+
+  as7341_read();
+  show_data();
 } // doubleclick
