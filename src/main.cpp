@@ -33,7 +33,7 @@ DFRobot_AS7341 as7341;
 
 //Energy energy;
 // Use pin 2 as wake up pin
-const int wakeUpPin = 2;
+const int wakeUpPin = 3;
 uint16_t readings[12]; //AS7341 data array
 float counts[12];
 //funcitons declear for platformIO;
@@ -72,7 +72,7 @@ void setup() {
 
 void loop() {
     // Allow wake up pin to trigger interrupt on low.
-    attachInterrupt(0, wakeUp, CHANGE);
+    attachInterrupt(1, wakeUp, LOW);
     
     // Enter power down state with ADC and BOD module disabled.
     // Wake up when wake up pin is low.
@@ -83,7 +83,7 @@ void loop() {
     
     // Do something here
     // Example: Read sensor, data logging, data transmission.
-
+ as7341_read();
   button.tick();
   delay(10);
   
@@ -196,6 +196,9 @@ void doubleclick() {
 
 void wakeUp()
 {
-    
-    doubleclick();
+      static int m = LOW;
+  // reverse the LED 
+  m = !m;
+  digitalWrite(13, m);
+   // doubleclick();
 }
