@@ -21,7 +21,7 @@
 U8G2_SH1106_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
 // Setup a new OneButton on pin A1.  
-  OneButton button(2,true);
+  OneButton button(A1,true);
 
 //setup AS7341 
   DFRobot_AS7341::sModeOneData_t data1;
@@ -33,9 +33,10 @@ DFRobot_AS7341 as7341;
 
 //Energy energy;
 // Use pin 2 as wake up pin
-const int wakeUpPin = 3;
+const int wakeUpPin = 2;
 uint16_t readings[12]; //AS7341 data array
 float counts[12];
+
 //funcitons declear for platformIO;
 
 void as7341_read(); //read out the data from as7431
@@ -50,8 +51,8 @@ void setup() {
 
 //debug_init();
 
-  pinMode(wakeUpPin, INPUT);   
-  pinMode(13, OUTPUT); 
+  pinMode(wakeUpPin, INPUT_PULLUP);   
+  //pinMode(13, OUTPUT); 
 
   u8g2.begin();
   button.attachDoubleClick(doubleclick);
@@ -72,7 +73,7 @@ void setup() {
 
 void loop() {
     // Allow wake up pin to trigger interrupt on low.
-    attachInterrupt(1, wakeUp, LOW);
+    attachInterrupt(0, wakeUp, FALLING);
     
     // Enter power down state with ADC and BOD module disabled.
     // Wake up when wake up pin is low.
@@ -83,9 +84,9 @@ void loop() {
     
     // Do something here
     // Example: Read sensor, data logging, data transmission.
- as7341_read();
-  button.tick();
-  delay(10);
+   doubleclick();
+ // button.tick();
+ // delay(10);
   
 }
 
@@ -94,8 +95,7 @@ void  as7341_read(){
 // light up 
   as7341.controlLed(100);
   as7341.enableLed(true);
-  delay(300);
-  //Start spectrum measurement 
+    delay(300);  //Start spectrum measurement 
   //Channel mapping mode: 1.eF1F4ClearNIR,2.eF5F8ClearNIR
   as7341.startMeasure(as7341.eF1F4ClearNIR);
   //Read the value of sensor data channel 0~5, under eF1F4ClearNIR
@@ -103,7 +103,7 @@ void  as7341_read(){
   as7341.startMeasure(as7341.eF5F8ClearNIR);
   //Read the value of sensor data channel 0~5, under eF5F8ClearNIR
   data2 = as7341.readSpectralDataTwo();
-  delay(300);
+  delay(300); 
   as7341.enableLed(false);
   
 }
@@ -169,7 +169,7 @@ void show_data(){
     u8g2.print(data2.ADNIR);
 
   } while ( u8g2.nextPage() );
-  delay(1000);
+  delay(1000); 
 }
 
 void show_init(){
@@ -179,26 +179,22 @@ void show_init(){
         do {
             u8g2.setCursor(0, 12);
             u8g2.print("Ready for measureing ");
-
         } while ( u8g2.nextPage() );
+        delay(1000); 
+        u8g2.clearDisplay();
 }
 
 void doubleclick() {
-  static int m = LOW;
-  // reverse the LED 
-  m = !m;
-  digitalWrite(13, m);
-
   as7341_read();
   show_data();
+  delay(5000);
+  u8g2.clearDisplay();
 } // doubleclick
 
 
 void wakeUp()
 {
-      static int m = LOW;
-  // reverse the LED 
-  m = !m;
-  digitalWrite(13, m);
-   // doubleclick();
+  button.tick();
+  delay(10);
+
 }
