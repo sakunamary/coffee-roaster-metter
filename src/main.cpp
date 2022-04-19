@@ -9,8 +9,8 @@
 #include <U8g2lib.h>
 
 
-#include "avr8-stub.h"
-#include "app_api.h"   // only needed with flash breakpoints
+//#include "avr8-stub.h"
+//#include "app_api.h"   // only needed with flash breakpoints
 #include "OneButton.h"
 //arduino sleep and wakeup lib;
 #include "LowPower.h"
@@ -27,34 +27,34 @@ U8G2_SH1106_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
   DFRobot_AS7341::sModeOneData_t data1;
   DFRobot_AS7341::sModeTwoData_t data2;
 
-
-
-Energy energy;
 DFRobot_AS7341 as7341;
+
+
+
+//Energy energy;
+// Use pin 2 as wake up pin
+const int wakeUpPin = 2;
 uint16_t readings[12]; //AS7341 data array
 float counts[12];
 //funcitons declear for platformIO;
 
 void as7341_read(); //read out the data from as7431
 void show_data();
-void INT0_ISR(void);
+void show_init();
 void doubleclick(); //as7341reding data
 void singleclick(); //power on  
-void 
+void wakeUp();
 
 
 void setup() {
 
-debug_init();
+//debug_init();
 
-
+  pinMode(wakeUpPin, INPUT);   
   pinMode(13, OUTPUT); 
+
   u8g2.begin();
-
-
   button.attachDoubleClick(doubleclick);
-
-
 
   while (as7341.begin() != 0) {
         u8g2.setFont(u8g2_font_6x12_tr);  
@@ -66,18 +66,24 @@ debug_init();
         } while ( u8g2.nextPage() );
     delay(1000);
   }
-        u8g2.setFont(u8g2_font_6x12_tr);  
-        u8g2.setFontDirection(0);
-        u8g2.firstPage();
-        do {
-            u8g2.setCursor(0, 12);
-            u8g2.print("Ready for measureing ");
-            
-        } while ( u8g2.nextPage() );
+       show_init();
 }
 
 
 void loop() {
+    // Allow wake up pin to trigger interrupt on low.
+    attachInterrupt(0, wakeUp, CHANGE);
+    
+    // Enter power down state with ADC and BOD module disabled.
+    // Wake up when wake up pin is low.
+    LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF); 
+    
+    // Disable external pin interrupt on wake up pin.
+    detachInterrupt(0); 
+    
+    // Do something here
+    // Example: Read sensor, data logging, data transmission.
+
   button.tick();
   delay(10);
   
@@ -166,6 +172,16 @@ void show_data(){
   delay(1000);
 }
 
+void show_init(){
+ u8g2.setFont(u8g2_font_6x12_tr);  
+        u8g2.setFontDirection(0);
+        u8g2.firstPage();
+        do {
+            u8g2.setCursor(0, 12);
+            u8g2.print("Ready for measureing ");
+
+        } while ( u8g2.nextPage() );
+}
 
 void doubleclick() {
   static int m = LOW;
@@ -176,3 +192,10 @@ void doubleclick() {
   as7341_read();
   show_data();
 } // doubleclick
+
+
+void wakeUp()
+{
+    
+    doubleclick();
+}

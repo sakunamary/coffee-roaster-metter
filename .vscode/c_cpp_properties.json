@@ -10,6 +10,7 @@
             "includePath": [
                 "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/include",
                 "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/src",
+                "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/.pio/libdeps/Macos/LowPower_LowPowerLab",
                 "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/.pio/libdeps/Macos/GyverPower/src",
                 "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/.pio/libdeps/Macos/OneButton/src",
                 "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/.pio/libdeps/Macos/U8g2/src",
@@ -30,6 +31,7 @@
                 "path": [
                     "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/include",
                     "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/src",
+                    "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/.pio/libdeps/Macos/LowPower_LowPowerLab",
                     "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/.pio/libdeps/Macos/GyverPower/src",
                     "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/.pio/libdeps/Macos/OneButton/src",
                     "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/.pio/libdeps/Macos/U8g2/src",
