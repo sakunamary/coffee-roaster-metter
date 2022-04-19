@@ -11,41 +11,43 @@
 
 #include "avr8-stub.h"
 #include "app_api.h"   // only needed with flash breakpoints
-
 #include "OneButton.h"
-
-
 //arduino sleep and wakeup lib;
-
 #include <Enerlib.h>
-Energy energy;
 
 
-DFRobot_AS7341 as7341;
 
+//setupt OLED;
 U8G2_SH1106_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
 // Setup a new OneButton on pin A1.  
-OneButton button(A1,true);
+  OneButton button(A1,true);
 
-uint16_t readings[12]; //AS7341 data array
-float counts[12];
+//setup AS7341 
   DFRobot_AS7341::sModeOneData_t data1;
   DFRobot_AS7341::sModeTwoData_t data2;
 
-void as7341_read(); 
+
+
+Energy energy;
+DFRobot_AS7341 as7341;
+uint16_t readings[12]; //AS7341 data array
+float counts[12];
+//funcitons declear for platformIO;
+
+void as7341_read(); //read out the data from as7431
 void show_data();
 void INT0_ISR(void);
-void doubleclick();
+
 
 void setup() {
 debug_init();
 
   u8g2.begin();
-  as7341.begin();
+  //as7341.begin();
 
-    button.attachDoubleClick(doubleclick);
-    pinMode(13, OUTPUT); 
+  button.attachDoubleClick(doubleclick);
+  pinMode(13, OUTPUT); 
 
 
   while (as7341.begin() != 0) {
@@ -75,8 +77,8 @@ debug_init();
 
 void loop() {
  button.tick();
-    show_data();
-      delay(10);
+ show_data();
+ delay(10);
 }
 
 
