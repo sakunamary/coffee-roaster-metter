@@ -72,6 +72,7 @@ debug_init();
         do {
             u8g2.setCursor(0, 12);
             u8g2.print("Ready for measureing ");
+            
         } while ( u8g2.nextPage() );
 }
 
