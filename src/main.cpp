@@ -54,7 +54,7 @@ void setup() {
   //pinMode(13, OUTPUT); 
 
   u8g2.begin();
-  button.attachDoubleClick(doubleclick);
+  button.attachDoubleClick(mian_get_function);
 
   while (as7341.begin() != 0) {
         u8g2.setFont(u8g2_font_6x12_tr);  
