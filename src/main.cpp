@@ -42,8 +42,7 @@ float counts[12];
 void as7341_read(); //read out the data from as7431
 void show_data();
 void show_init();
-void doubleclick(); //as7341reding data
-void singleclick(); //power on  
+void mian_get_function(); //as7341reding data
 void wakeUp();
 
 
@@ -72,19 +71,25 @@ void setup() {
 
 
 void loop() {
+
+
     // Allow wake up pin to trigger interrupt on low.
-    attachInterrupt(0, wakeUp, FALLING);
+    attachInterrupt(digitalPinToInterrupt(wakeUpPin), wakeUp, FALLING);
     
+
+   // Do something here
+    // Example: Read sensor, data logging, data transmission.
+     mian_get_function();
+
     // Enter power down state with ADC and BOD module disabled.
     // Wake up when wake up pin is low.
     LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF); 
     
     // Disable external pin interrupt on wake up pin.
-    detachInterrupt(0); 
+    detachInterrupt(digitalPinToInterrupt(wakeUpPin)); 
     
-    // Do something here
-    // Example: Read sensor, data logging, data transmission.
-   doubleclick();
+ 
+
  // button.tick();
  // delay(10);
   
@@ -184,7 +189,7 @@ void show_init(){
         u8g2.clearDisplay();
 }
 
-void doubleclick() {
+void mian_get_function() {
   as7341_read();
   show_data();
   delay(5000);
@@ -194,7 +199,5 @@ void doubleclick() {
 
 void wakeUp()
 {
-  button.tick();
-  delay(10);
 
 }
