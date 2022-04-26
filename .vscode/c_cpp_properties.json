@@ -10,6 +10,8 @@
             "includePath": [
                 "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/include",
                 "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/src",
+                "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/lib/Enerlib",
+                "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/.pio/libdeps/Macos/TimerOne",
                 "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/.pio/libdeps/Macos/LowPower_LowPowerLab",
                 "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/.pio/libdeps/Macos/OneButton/src",
                 "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/.pio/libdeps/Macos/U8g2/src",
@@ -19,7 +21,6 @@
                 "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/.pio/libdeps/Macos/avr-debugger/avr8-stub",
                 "/Users/xiaoning/.platformio/packages/framework-arduino-avr/cores/arduino",
                 "/Users/xiaoning/.platformio/packages/framework-arduino-avr/variants/eightanaloginputs",
-                "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/lib/Enerlib",
                 "/Users/xiaoning/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
                 "/Users/xiaoning/.platformio/packages/framework-arduino-avr/libraries/HID/src",
                 "/Users/xiaoning/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
@@ -30,6 +31,8 @@
                 "path": [
                     "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/include",
                     "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/src",
+                    "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/lib/Enerlib",
+                    "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/.pio/libdeps/Macos/TimerOne",
                     "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/.pio/libdeps/Macos/LowPower_LowPowerLab",
                     "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/.pio/libdeps/Macos/OneButton/src",
                     "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/.pio/libdeps/Macos/U8g2/src",
@@ -39,7 +42,6 @@
                     "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/.pio/libdeps/Macos/avr-debugger/avr8-stub",
                     "/Users/xiaoning/.platformio/packages/framework-arduino-avr/cores/arduino",
                     "/Users/xiaoning/.platformio/packages/framework-arduino-avr/variants/eightanaloginputs",
-                    "/Users/xiaoning/Documents/GitHub/coffee-roaster-metter/lib/Enerlib",
                     "/Users/xiaoning/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
                     "/Users/xiaoning/.platformio/packages/framework-arduino-avr/libraries/HID/src",
                     "/Users/xiaoning/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
